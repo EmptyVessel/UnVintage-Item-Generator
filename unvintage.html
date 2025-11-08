@@ -1,0 +1,221 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+	<title>Unvintage Item Generator</title>
+	<link rel="stylesheet" href="./res/style.css">
+</head>
+
+<body>
+	<div class="top">
+		<div class="hdcont">
+			<p>Unvintage Item Generator v1</p>
+		</div>
+		<div class="flexcont" style="align-items:flex-end">
+			<span style="margin-left: 5px;">by Empty Vessel</span>
+		</div>
+	</div>
+	<div class="header">
+		<h2 style="display:inline;"><span style="color: #b74936;">&raquo</span> Backpack</h2>
+		<div class="dropMenu">
+			<button id="presets" autocomplete="off" disabled>Backpack Preset &#8203; &#8203; &#8203; &#8203; &#8203; &#8203; &#8203; &#8203; &#8203; &#8203; &#8203; &#8203; &#8203; &#8203; &#8203; &#8203; &#x25BC;</button>
+			<div id="drop1" class="invisible drop">
+				<button OnClick="clearbp(); maxpage = 4; deselect(); off(drop1); off(info);">Empty Backpack</button>
+				<button OnClick="allItems();">All Items</button>
+				<button OnClick="allAccessible(true);">All Accessible Items</button>
+				<button OnClick="allAccessible(false);">All Accessible No Stock</button>
+				<button OnClick="allWepsHats();">All Weapons and Hats</button>
+				<button OnClick="allWeapons(true);">All Weapons w/ Stock</button>
+				<button OnClick="allWeapons(false);">All Weapons No Stock</button>
+				<button OnClick="allHats();">All Hats</button>
+			</div>
+		</div>
+	</div>
+	
+	<div id="sticky" class="invisible">
+		<p style="margin-bottom: 1px; line-height: 18px;">Unknown Item</p>
+		<p style="font-family: TF2secondary; font-size: 16px; margin-top: 0;">Unknown Level</p>
+	</div>
+	
+	<div id="options" class="invisible">
+		<h2>Options</h2>
+		
+		<button type="button" onClick="off(options)">Close</button>
+	</div>
+	
+	<div id="genOptions" class="invisible">
+		<button type="button" onClick="off(genOptions)" class="X">X</button>
+		<h2 style="margin-top: 20px;">Choose Generation Method:</h2>
+		<button type="button" onMouseOver="details(1);" onMouseOut="details(0);"  onClick="rev(true);">Older RevEmu/RevLoader</button><br>
+		<button type="button" onMouseOver="details(2);" onMouseOut="details(0);"  onClick="rev(false);">Rev Item Database</button><br>
+		<button type="button" onMouseOver="details(4);" onMouseOut="details(0);" onClick="sse();" disabled>SmartSteamEmu</button><br>
+		<p style="line-height: 15px; margins:0; font-family: TF2secondary;">More details:</p>
+		<div style="height: 75px; margin-bottom: 15px; text-align: center;" class="flexcont">
+			<p style="font-family: TF2secondary; width: 80%;" id="details">Mouse over a button for more details</p>
+		</div>
+	</div>
+	
+	<div id="help" class="invisible">
+		<h3></h3>
+		<p></p>
+		<button OnClick="updateHelp(1)" class="helpbutton">&gt;</button><button OnClick="updateHelp(-1)" class="helpbutton">&lt;</button>
+		<button OnClick="off(help); helpPage = 0;" class="X" style="color: #ece3cb; font-size:20px; width: 35px !important; height: 35px; border-radius: 20px; padding: 0;">X</button>
+		<p style="color: #b74936; position: absolute; bottom: 0; left: 10;">1/6</p>
+	</div>
+	
+	<div id="warn" class="">
+		<p>No items_game.txt file loaded.<br>File can be found at the path:<br style="line-height: 22px; content: " ";"> [Root Directory]/tf/scripts/items</p><p>Awaiting file...</p>
+	</div>
+	
+	<div id="search" class="invisible">
+		<button type="button" onClick="off(search);" class="X">X</button>
+		<h2>Search</h2>
+		<input id="searchbar" type="text" maxlength=30 size="20" class="" align="center" autocomplete="off" placeholder="Search for item...">
+		<div id="searchfill">No Items Found.</div>
+	</div>
+	
+	<div class="flexcont" style="align-items:flex-start;">
+		<div style="margin-right: 25px;">
+			<div id="backpack">
+			</div>
+			<div style="margin: 0; display: flex; justify-content: center; align-items: center;">
+				<button id="delete" type="button" onClick="deleteItem()" style="margin-right: 75px;" disabled><span style="color: #b74936;">X</span> Delete</button>
+				<div style="text-align: center; margin-right: 75px">
+					<input type="file" id="load" accept=".txt" style="display: none;">
+						<label for="load">Load items_game.txt...</label>
+					<input type="file" id="import" accept=".bin" style="display: none;" disabled>
+						<label for="import">Import...</label>
+					<button OnClick="on(help); updateHelp(0)" class="Q">?</button>
+				</div>
+				<button id="lessPage" onClick="updateMaxPages(-1)" style="padding: 6px 10px; margin: 0;" autocomplete="off" disabled>-</button>
+				<button id="pagel"  type="button" onClick="updatePage(-1)" style="padding: 6px 10px;" autocomplete="off" disabled>&lt;</button>
+				<div class="page">
+					<span id="page">1/4</span>
+				</div>
+				<button id="pager" type="button" onClick="updatePage(1)" style="padding: 6px 10px;" autocomplete="off" disabled>&gt;</button>
+				<button id="morePage" onClick="updateMaxPages(1)" style="padding: 6px 10px; margin: 0 15px 0 0;" autocomplete="off" disabled>+</button>
+			</div>
+			<div>
+				<p style="text-align: center; font-family: TF2secondary; color: #b74936;">Note: Tool may not function properly with newer versions of items_game.txt.<br>Confirmed to be working with version 1.1.6.5 and before.</p>
+			</div>
+		</div>
+
+		<div id="info">
+			<div id="infocont" class="invisible">
+				<button id="paintable" OnClick="toggle(list11)">
+					<img src="backpack/player/items/crafting/paintcan.png">
+				</button>
+				<div id="list11" OnMouseOver="on(list11)" OnMouseOut="off(list11)" class="list invisible">
+					<button OnClick="setPaintColor(-1); off(list11);">No Paint</button>
+					<button OnClick="setPaintColor('843CE54A'); off(list11);" style="color: #729E42;">Indubitably Green</button>
+					<button OnClick="setPaintColor('769E844A'); off(list11);" style="color: #424F3B;">Zepheniah's Greed</button>
+					<button OnClick="setPaintColor('9470A24A'); off(list11);" style="color: #51384A; text-shadow: -1px -1px 0 #FFF, 1px -1px 0 #FFF, -1px 1px 0 #FFF, 1px 1px 0 #FFF;">Noble Hatter's Violet</button>
+					<button OnClick="setPaintColor('D8BE584B'); off(list11);" style="color: #D8BED8;">Color No. 216-190-216</button>
+					<button OnClick="setPaintColor('E230FA4A'); off(list11);" style="color: #7D4071;">A Deep Commitment to Purple</button>
+					<button OnClick="setPaintColor('36734F4B'); off(list11);" style="color: #CF7336;">Mann Co. Orange</button>
+					<button OnClick="setPaintColor('4575254B'); off(list11);" style="color: #A57545;">Muskelmannbraun</button>
+					<button OnClick="setPaintColor('91AF454B'); off(list11);" style="color: #C5AF91;">Peculiarly Drab Tincture</button>
+					<button OnClick="setPaintColor('749AD24A'); off(list11);" style="color: #694D3A; text-shadow: -1px -1px 0 #FFF, 1px -1px 0 #FFF, -1px 1px 0 #FFF, 1px 1px 0 #FFF;">Radigan Conagher Brown</button>
+					<button OnClick="setPaintColor('AED8F84A'); off(list11);" style="color: #7C6C57;">Ye Olde Rustic Colour</button>
+					<button OnClick="setPaintColor('3BB5674B'); off(list11);" style="color: #E7B53B;">Australium Gold</button>
+					<button OnClick="setPaintColor('FCFCFC4A'); off(list11);" style="color: #7E7E7E;">Aged Moustache Grey</button>
+					<button OnClick="setPaintColor('E6E6664B'); off(list11);" style="color: #E6E6E6;">An Extraordinary Abundance of Tinge</button>
+					<button OnClick="setPaintColor('A0A0A049'); off(list11);" style="color: #141414; text-shadow: -1px -1px 0 #FFF, 1px -1px 0 #FFF, -1px 1px 0 #FFF, 1px 1px 0 #FFF;">A Distinctive Lack of Hue</button>
+					<button OnClick="setPaintColor('B4697F4B'); off(list11);" style="color: #FF69B4;">Pink as Hell</button>
+					<button OnClick="setPaintColor('3C3D3D4A'); off(list11);" style="color: #2F4F4F;">A Color Similar to Slate</button>
+					<button OnClick="setPaintColor('0080004B'); off(list11);" style="color: #808000;">Drably Olive</button>
+					<button OnClick="setPaintColor('C8344B4A'); off(list11);" style="color: #32CD32;">The Bitter Taste of Defeat and Lime</button>
+					<button OnClick="setPaintColor('8CE6704B'); off(list11);" style="color: #F0E68C;">The Color of a Gentlemann's Business Pants</button>
+					<button OnClick="setPaintColor('7A96694B'); off(list11);" style="color: #E9967A;">Dark Salmon Injustice</button>
+					
+					<button OnClick="setPaintColor()" style="color: #BCDDB3">A Mann's Mint</button>
+					<button OnClick="setPaintColor()" style="color: #2D2D24; text-shadow: -1px -1px 0 #FFF, 1px -1px 0 #FFF, -1px 1px 0 #FFF, 1px 1px 0 #FFF;">After Eight</button>
+				</div>
+				
+				<div class="dropMenu">
+					<button id="quality" OnClick="setSelected(drop2.childNodes[0], true);">Quality &#8203; &#x25BC;</button>
+					<div id="drop2" class="invisible drop">
+						
+					</div>
+					<div id="list0" OnMouseOver="on(list0)" OnMouseOut="off(list0)" class="list invisible">
+						<button>No Effect</button>
+					</div>
+				</div>
+				<div class="dropMenu">
+					<button id="item" OnClick="setSelected(drop3.children[0], true);">Item &#8203; &#x25BC;</button>
+					<div id="drop3" class="invisible drop">
+						<button OnMouseOver="setSelected(this, false);" OnClick="srch();">Search... 🔎︎</button><hr width="80%">
+						
+						<button OnMouseOver="on(list1); setSelected(this, false);" OnMouseOut="off(list1)">Scout &#8203; &#9654;</button>
+						<button OnMouseOver="on(list2); setSelected(this, false);" OnMouseOut="off(list2)">Soldier &#8203; &#9654;</button>
+						<button OnMouseOver="on(list3); setSelected(this, false);" OnMouseOut="off(list3)">Pyro &#8203; &#9654;</button><hr width="80%">
+
+						<button OnMouseOver="on(list4); setSelected(this, false);" OnMouseOut="off(list4)">Demo &#8203; &#9654;</button>
+						<button OnMouseOver="on(list5); setSelected(this, false);" OnMouseOut="off(list5)">Heavy &#8203; &#9654;</button>
+						<button OnMouseOver="on(list6); setSelected(this, false);" OnMouseOut="off(list6)">Engineer &#8203; &#9654;</button><hr width="80%">
+
+						<button OnMouseOver="on(list7); setSelected(this, false);" OnMouseOut="off(list7)">Sniper &#8203; &#9654;</button>
+						<button OnMouseOver="on(list8); setSelected(this, false);" OnMouseOut="off(list8)">Medic &#8203; &#9654;</button>
+						<button OnMouseOver="on(list9); setSelected(this, false);" OnMouseOut="off(list9)">Spy &#8203; &#9654;</button><hr width="80%">
+						
+						<button OnMouseOver="on(list12); setSelected(this, false);" OnMouseOut="off(list12)">Multi/All &#8203; &#9654;</button>
+						<button OnMouseOver="on(list10); setSelected(this, false);" OnMouseOut="off(list10)">Other &#8203; &#9654;</button>
+					</div>
+					<div id="list1" OnMouseOver="on(list1)" OnMouseOut="off(list1)" class="list invisible">
+						
+					</div>
+					<div id="list2" OnMouseOver="on(list2)" OnMouseOut="off(list2)" class="list invisible">
+						
+					</div>
+					<div id="list3" OnMouseOver="on(list3)" OnMouseOut="off(list3)" class="list invisible">
+						
+					</div>
+					
+					<div id="list4" OnMouseOver="on(list4)" OnMouseOut="off(list4)" class="list invisible">
+						
+					</div>
+					<div id="list5" OnMouseOver="on(list5)" OnMouseOut="off(list5)" class="list invisible">
+						
+					</div>
+					<div id="list6" OnMouseOver="on(list6)" OnMouseOut="off(list6)" class="list invisible">
+						
+					</div>
+					
+					<div id="list7" OnMouseOver="on(list7)" OnMouseOut="off(list7)" class="list invisible">
+						
+					</div>
+					<div id="list8" OnMouseOver="on(list8)" OnMouseOut="off(list8)" class="list invisible">
+						
+					</div>
+					<div id="list9" OnMouseOver="on(list9)" OnMouseOut="off(list9)" class="list invisible">
+						
+					</div>
+					<div id="list12" OnMouseOver="on(list12)" OnMouseOut="off(list12)" class="list invisible">
+						
+					</div>
+					<div id="list10" OnMouseOver="on(list10)" OnMouseOut="off(list10)" class="list invisible">
+						
+					</div>
+				</div>
+				
+				<div id="inamecont">
+					<p id="instatic"><span id="iname">Item Not Found</span><button onClick="" id="inbutton">✎</button></p>
+					
+					<p class="invisible" id="ininput"><input id="custname" type="text" maxlength=30 size="20" class="" align="center" autocomplete="off"><button onClick="on(instatic); off(ininput); clearName();" class="inbutton">X</button></p>
+				</div>
+				
+				<p style="font-family:TF2secondary;">Level <input type="number" id="level"><span id="itype">Item</span></p>
+				
+				<img src="backpack/weapons/Unknownweapon_large.png" id="infoPic" alt="" style="max-width: 60%; margin-top: 0;"><br>			
+				<p id="effect" style="font-family: TF2secondary; background-color: transparent;" class="invisible">Effect: No Effect</p>
+			</div>
+		</div>
+	</div>
+	
+	<div class="footer">
+		<button type="button" id="generate" onClick="on(genOptions)" autocomplete="off" disabled>Generate Inventory File</button>
+	</div>
+</body>
+</html>
+
+<script src="res/loader.js"></script>
