@@ -9,4 +9,5 @@ The purpose of this tool is to create inventories for older versions of TF2 that
 ## Known Issues
 - SSE is not properly implemented yet. Might work in small numbers of items with older versions of SSE, but no further. I invite anyone who knows more in-depth about SSE's item generation to get in contact with me.
 - Although the tool is partially crafted to work with more modern versions of TF2, it may not function 100% properly.
+- Importing files not yet implemented.
 <br>Feel free to make me aware of any other issues you may encounter.
