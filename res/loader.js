@@ -7882,7 +7882,6 @@ function checkName(){
 var time;
 
 function noItemWarning(){
-	console.log("yeah");
 	on(warn);
 	warn.innerHTML = '<p style="font-size: 40px;">You must select an item first!</p>';
 	clearTimeout(time);
@@ -8241,7 +8240,6 @@ function setupDrop3(){
 }
 
 function parseItem(itm, button){
-	console.log(itm);
 	let item = JSON.parse(getPrefab(itm));
 	
 //	if(itm.hasOwnProperty('prefab') && !itm.hasOwnProperty('used_by_classes')){
@@ -8534,9 +8532,7 @@ function getPrefab(itm){
 		let rep = items[itm].prefab.split(' ');
 		rep.forEach((wrd) => {
 			let pfb = Object.assign({}, prefabs[wrd]);
-			console.log(pfb);
 			Object.keys(pfb).forEach((key) =>{
-				console.log(key);
 				if(newItm.hasOwnProperty(key)){
 					delete pfb[key];
 				}
